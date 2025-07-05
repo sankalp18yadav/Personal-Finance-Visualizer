@@ -1,13 +1,9 @@
 import { connectDB } from "@/lib/db";
 import Transaction from "@/lib/models/Transaction";
 import { NextRequest, NextResponse } from "next/server";
-import type { NextApiRequestContext } from "next/server";
 
 // PUT: update a transaction
-export async function PUT(
-  req: NextRequest,
-  context: NextApiRequestContext
-) {
+export async function PUT(req: NextRequest, context: { params: any }) {
   const id = context.params.id;
   await connectDB();
 
@@ -39,7 +35,7 @@ export async function PUT(
 // DELETE: remove a transaction
 export async function DELETE(
   _req: NextRequest,
-  context: NextApiRequestContext
+  context: { params: any }
 ) {
   const id = context.params.id;
   await connectDB();
