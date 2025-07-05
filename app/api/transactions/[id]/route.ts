@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 
 // PUT: Update a transaction
 export async function PUT(req: Request, context: { params: { id: string } }) {
-  await connectDB();
+  const { id } = context.params; // ✅ Read this BEFORE any await
 
-  const { id } = await context.params; // ✅ Await context.params to remove warning
+  await connectDB();
 
   try {
     const data = await req.json();
@@ -35,9 +35,9 @@ export async function PUT(req: Request, context: { params: { id: string } }) {
 
 // DELETE: Remove a transaction
 export async function DELETE(_req: Request, context: { params: { id: string } }) {
-  await connectDB();
+  const { id } = context.params; // ✅ Read this BEFORE any await
 
-  const { id } = await context.params; // ✅ Await context.params to remove warning
+  await connectDB();
 
   try {
     const deleted = await Transaction.findByIdAndDelete(id);
