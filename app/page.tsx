@@ -30,7 +30,7 @@ export default function Home() {
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-8 lg:space-y-12">
         <section className="grid lg:grid-cols-2 gap-6">
           <TransactionForm onAdd={fetchTransactions} />
-          <TransactionList transactions={transactions} />
+          <TransactionList transactions={transactions} onUpdate={fetchTransactions} />
         </section>
 
         <MonthlyExpenseChart transactions={transactions} />

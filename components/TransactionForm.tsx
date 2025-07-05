@@ -37,7 +37,7 @@ export default function TransactionForm({ onAdd }: { onAdd: () => void }) {
       toast.success("Transaction added ✔");
       setForm({ amount: "", description: "", date: new Date() });
 
-      onAdd(); // 🔁 Refresh transactions list & chart
+      onAdd(); // 🔁 Refresh transaction list + chart
     } catch {
       toast.error("Failed to add transaction");
     } finally {
@@ -46,7 +46,7 @@ export default function TransactionForm({ onAdd }: { onAdd: () => void }) {
   }
 
   return (
-    <Card className="bg-white/20 backdrop-blur p-6 space-y-4 shadow-lg  text-white">
+    <Card className="bg-white/20 backdrop-blur p-6 space-y-4 shadow-lg text-white">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1">
           <Label htmlFor="amount">Amount</Label>
