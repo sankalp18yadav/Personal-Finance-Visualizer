@@ -4,7 +4,17 @@ const MONGODB_URI = process.env.MONGODB_URI as string;
 
 if (!MONGODB_URI) throw new Error("Missing MONGODB_URI in .env");
 
-let cached = (global as any).mongoose || { conn: null, promise: null };
+type MongooseConnection = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
+
+declare global {
+  // Allow global mongoose cache
+  var mongoose: MongooseConnection | undefined;
+}
+
+const cached: MongooseConnection = global.mongoose || { conn: null, promise: null };
 
 export async function connectDB() {
   if (cached.conn) return cached.conn;
@@ -22,6 +32,6 @@ export async function connectDB() {
     throw e;
   }
 
-  (global as any).mongoose = cached;
+  global.mongoose = cached;
   return cached.conn;
 }
