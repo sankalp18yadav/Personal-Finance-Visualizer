@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogFooter,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
@@ -25,27 +24,29 @@ interface Transaction {
 
 export default function TransactionList({
   transactions,
-  onUpdate
+  onUpdate,
 }: {
   transactions: Transaction[];
   onUpdate: () => void;
 }) {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null);
   const [form, setForm] = useState({
     description: "",
     amount: "",
-    date: new Date()
+    date: new Date(),
   });
   const [saving, setSaving] = useState(false);
 
-  const startEdit = (t: Transaction) => {
+  const openEditDialog = (t: Transaction) => {
     setForm({
       description: t.description,
       amount: String(t.amount),
-      date: new Date(t.date)
+      date: new Date(t.date),
     });
-    setOpenId(t._id);
+    setOpenDialogId(t._id);
   };
+
+  const closeDialog = () => setOpenDialogId(null);
 
   const handleSave = async (id: string) => {
     setSaving(true);
@@ -56,12 +57,13 @@ export default function TransactionList({
         body: JSON.stringify({
           description: form.description,
           amount: parseFloat(form.amount),
-          date: form.date
-        })
+          date: form.date,
+        }),
       });
       if (!res.ok) throw new Error("Update failed");
+
       toast.success("Transaction updated");
-      setOpenId(null);
+      closeDialog();
       onUpdate();
     } catch {
       toast.error("Update failed");
@@ -70,22 +72,23 @@ export default function TransactionList({
     }
   };
 
-  async function handleDelete(id: string) {
+  const handleDelete = async (id: string) => {
     try {
       const res = await fetch(`/api/transactions/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Delete failed");
+
       toast.success("Transaction deleted");
       onUpdate();
     } catch {
       toast.error("Delete failed");
     }
-  }
+  };
 
   if (!transactions.length) {
     return (
       <div className="bg-white/20 backdrop-blur p-4 rounded shadow text-white">
         <h2 className="text-lg font-semibold mb-4">Transactions</h2>
-        <p>No transactions</p>
+        <p className="text-gray-400">No transactions available.</p>
       </div>
     );
   }
@@ -107,9 +110,11 @@ export default function TransactionList({
             </div>
 
             <div className="flex gap-2">
-              <Button size="sm" onClick={() => startEdit(t)}>
+              {/* 🟢 Open edit dialog manually */}
+              <Button size="sm" onClick={() => openEditDialog(t)} className="cursor-pointer">
                 Edit
               </Button>
+
               <Button
               className="cursor-pointer"
                 size="sm"
@@ -120,20 +125,15 @@ export default function TransactionList({
               </Button>
             </div>
 
-            {/* ----- Dialog ----- */}
-            <Dialog open={openId === t._id} onOpenChange={() => setOpenId(null)}>
-              <DialogTrigger asChild></DialogTrigger>
-
-              {openId === t._id && (
-                <DialogContent
-                  className="sm:max-w-md bg-[#232323] text-white shadow-xl border border-blue-500/30 shadow-blue-500/30"
-                >
+            {/* 🟢 Controlled Dialog (based on openDialogId) */}
+            {openDialogId === t._id && (
+              <Dialog open onOpenChange={closeDialog}>
+                <DialogContent className="sm:max-w-md bg-[#232323] text-white border border-blue-500/30 shadow-blue-500/30">
                   <DialogHeader>
                     <DialogTitle>Edit Transaction</DialogTitle>
                   </DialogHeader>
 
                   <div className="space-y-4 py-2">
-                    {/* Description */}
                     <div className="space-y-1">
                       <Label>Description</Label>
                       <Input
@@ -144,7 +144,6 @@ export default function TransactionList({
                       />
                     </div>
 
-                    {/* Amount */}
                     <div className="space-y-1">
                       <Label>Amount</Label>
                       <Input
@@ -156,7 +155,6 @@ export default function TransactionList({
                       />
                     </div>
 
-                    {/* Date */}
                     <div className="space-y-1">
                       <Label>Date</Label>
                       <Calendar
@@ -173,16 +171,16 @@ export default function TransactionList({
 
                   <DialogFooter>
                     <Button
-                    className="cursor-pointer"
                       onClick={() => handleSave(t._id)}
                       disabled={saving}
+                      className="cursor-pointer"
                     >
                       {saving ? "Saving..." : "Save"}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
-              )}
-            </Dialog>
+              </Dialog>
+            )}
           </li>
         ))}
       </ul>
