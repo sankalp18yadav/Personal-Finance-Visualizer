@@ -2,35 +2,57 @@ import { connectDB } from "@/lib/db";
 import Budget from "@/lib/models/Budget";
 import { NextRequest, NextResponse } from "next/server";
 
-// PUT update budget
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = params.id;
+// PUT: Update budget by ID
+export async function PUT(req: NextRequest, context: any) {
+  const id = context.params.id;
+
   await connectDB();
-  const { category, month, amount } = await req.json();
 
-  const updated = await Budget.findByIdAndUpdate(
-    id,
-    { category, month, amount },
-    { new: true }
-  );
+  try {
+    const body = await req.json();
+    const { category, month, amount } = body;
 
-  if (!updated) {
-    return NextResponse.json({ error: "Budget not found" }, { status: 404 });
+    const updated = await Budget.findByIdAndUpdate(
+      id,
+      { category, month, amount },
+      { new: true }
+    );
+
+    if (!updated) {
+      return NextResponse.json({ error: "Budget not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(updated);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    console.error("🔥 PUT /api/budgets/[id] error:", msg);
+    return NextResponse.json(
+      { error: "Failed to update budget", message: msg },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json(updated);
 }
 
-// DELETE budget
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const id = params.id;
+// DELETE: Delete budget by ID
+export async function DELETE(_req: NextRequest, context: any) {
+  const id = context.params.id;
+
   await connectDB();
 
-  const deleted = await Budget.findByIdAndDelete(id);
+  try {
+    const deleted = await Budget.findByIdAndDelete(id);
 
-  if (!deleted) {
-    return NextResponse.json({ error: "Budget not found" }, { status: 404 });
+    if (!deleted) {
+      return NextResponse.json({ error: "Budget not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    console.error("🔥 DELETE /api/budgets/[id] error:", msg);
+    return NextResponse.json(
+      { error: "Failed to delete budget", message: msg },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ success: true });
 }
