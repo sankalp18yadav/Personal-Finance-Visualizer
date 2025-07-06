@@ -3,11 +3,8 @@ import Transaction from "@/lib/models/Transaction";
 import { NextRequest, NextResponse } from "next/server";
 
 // PUT: Update transaction
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
+export async function PUT(req: NextRequest, context: any) {
+  const id = context.params.id;
 
   await connectDB();
 
@@ -40,11 +37,8 @@ export async function PUT(
 }
 
 // DELETE: Delete transaction
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
+export async function DELETE(_req: NextRequest, context: any) {
+  const id = context.params.id;
 
   await connectDB();
 
