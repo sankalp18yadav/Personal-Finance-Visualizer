@@ -5,6 +5,8 @@ import Header from "@/components/Header";
 import TransactionForm from "@/components/TransactionForm";
 import TransactionList from "@/components/TransactionList";
 import MonthlyExpenseChart from "@/components/MonthlyExpenseChart";
+import CategoryPieChart from "@/components/CategoryPieChart";
+import DashboardSummary from "@/components/DashboardSummary";
 import { Toaster } from "sonner";
 
 export default function Home() {
@@ -33,7 +35,12 @@ export default function Home() {
           <TransactionList transactions={transactions} onUpdate={fetchTransactions} />
         </section>
 
-        <MonthlyExpenseChart transactions={transactions} />
+        <DashboardSummary transactions={transactions} />
+
+        <section className="grid lg:grid-cols-2 gap-6">
+          <MonthlyExpenseChart transactions={transactions} />
+          <CategoryPieChart transactions={transactions} />
+        </section>
       </main>
 
       <Toaster richColors position="top-right" />

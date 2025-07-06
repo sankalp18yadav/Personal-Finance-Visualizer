@@ -1,7 +1,13 @@
 "use client";
 
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -13,7 +19,11 @@ interface Transaction {
   date: string;
 }
 
-export default function MonthlyExpenseChart({ transactions }: { transactions: Transaction[] }) {
+export default function MonthlyExpenseChart({
+  transactions,
+}: {
+  transactions: Transaction[];
+}) {
   if (!Array.isArray(transactions)) {
     return (
       <Alert variant="destructive">
@@ -41,7 +51,9 @@ export default function MonthlyExpenseChart({ transactions }: { transactions: Tr
   return (
     <Card className="bg-white/10 backdrop-blur p-6 shadow-lg">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold text-white">Monthly Expenses</CardTitle>
+        <CardTitle className="text-lg font-semibold text-white">
+          Monthly Expenses
+        </CardTitle>
       </CardHeader>
 
       <Separator className="bg-gray-600/50 my-2" />
@@ -52,8 +64,16 @@ export default function MonthlyExpenseChart({ transactions }: { transactions: Tr
             <XAxis dataKey="month" stroke="#d1d5db" />
             <YAxis stroke="#d1d5db" />
             <Tooltip
-              wrapperStyle={{ backgroundColor: "#1f2937", borderRadius: "0.5rem" }}
-              contentStyle={{ backgroundColor: "#1f2937", border: "none", color: "#f3f4f6" }}
+              wrapperStyle={{
+                backgroundColor: "#1f2937",
+                borderRadius: "0.5rem",
+              }}
+              contentStyle={{
+                backgroundColor: "#1f2937",
+                border: "none",
+              }}
+              labelStyle={{ color: "#ffffff", fontWeight: "bold" }}
+              itemStyle={{ color: "#ffffff" }}
               cursor={{ fill: "#374151" }}
             />
             <Bar dataKey="total">
