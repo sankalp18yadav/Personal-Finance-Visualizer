@@ -120,3 +120,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  input[type="month"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* makes black icon white */
+    cursor: pointer;
+  }
+
+  .dark input[type="month"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* force white icon in dark mode */
+  }
+}
